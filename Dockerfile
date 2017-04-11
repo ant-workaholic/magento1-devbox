@@ -29,6 +29,7 @@ RUN yum -y install \
 	php56w-pecl-memcached \
     php56w-pecl-xdebug \
     php56w-pecl-opcache \
+    sendmail \
 	&& yum clean all
 #ADD supervisord_*.ini /etc/supervisord.d/
 
