@@ -34,6 +34,11 @@ RUN yum -y install \
 	&& yum clean all
 #ADD supervisord_*.ini /etc/supervisord.d/
 
+RUN yum install php-devel \
+    php-pear
+
+RUN pecl install xdebug
+
 COPY httpd.conf /etc/httpd/conf/httpd.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN curl -SL https://raw.githubusercontent.com/colinmollenhour/modman/master/modman -o modman \
