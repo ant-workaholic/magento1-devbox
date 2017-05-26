@@ -31,13 +31,18 @@ RUN yum -y install \
     php56w-pecl-xdebug \
     php56w-pecl-opcache \
     sendmail \
+    php-pecl-xdebug \
+    sudo \
 	&& yum clean all
 #ADD supervisord_*.ini /etc/supervisord.d/
+# Added Xdebug config for SSH connections
 
-RUN yum install php-devel \
-    php-pear
 
-RUN pecl install xdebug
+COPY init-files/xdebug.ini /etc/php.d/xdebug.ini.join
+RUN xd_file=$(php -i | grep xdebug.ini | grep -oE '/.+xdebug.ini') && \
+  cat /etc/php.d/xdebug.ini.join >> ${xd_file} && \
+  rm -f /etc/php.d/xdebug.ini.join && \
+  xd_swi restart-command -- sudo supervisorctl restart php-fpm
 
 COPY httpd.conf /etc/httpd/conf/httpd.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
