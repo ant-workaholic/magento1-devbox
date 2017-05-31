@@ -43,6 +43,13 @@ RUN xd_file=$(php -i | grep xdebug.ini | grep -oE '/.+xdebug.ini') && \
   cat /etc/php.d/xdebug.ini.join >> ${xd_file} && \
   rm -f /etc/php.d/xdebug.ini.join
 
+  # Get Xdebug switcher and disable XDebug
+  #RUN curl -Ls https://raw.github.com/rikby/xdebug-switcher/master/download | bash && xd_swi off
+  # Add static file (v0.6.0)
+  COPY init-files/xd_swi /usr/local/bin/xd_swi
+  RUN chmod +x /usr/local/bin/xd_swi && xd_swi off
+
+
 COPY httpd.conf /etc/httpd/conf/httpd.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN curl -SL https://raw.githubusercontent.com/colinmollenhour/modman/master/modman -o modman \
