@@ -37,6 +37,20 @@ RUN yum -y install \
 #ADD supervisord_*.ini /etc/supervisord.d/
 # Added Xdebug config for SSH connections
 
+COPY httpd.conf /etc/httpd/conf/httpd.conf
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -SL https://raw.githubusercontent.com/colinmollenhour/modman/master/modman -o modman \
+    && chmod +x ./modman \
+    && mv ./modman /usr/local/bin/
+
+# Expose apache.
+EXPOSE 80
+
+# By default start up apache in the foreground, override with /bin/bash for interative.
+CMD /usr/sbin/httpd -D FOREGROUND
+
+
+
 #####################################
 # Soft for developers               #
 #####################################
@@ -100,30 +114,18 @@ RUN mkdir -p /root/.ssh /home/magento/.ssh && \
 # Copy supervisord files
 ADD init-files/supervisord_*.ini /etc/supervisord.d/
 
-COPY init-files/xdebug.ini /etc/php.d/xdebug.ini.join
-RUN xd_file=$(php -i | grep xdebug.ini | grep -oE '/.+xdebug.ini') && \
-  cat /etc/php.d/xdebug.ini.join >> ${xd_file} && \
-  rm -f /etc/php.d/xdebug.ini.join
 
-  # Get Xdebug switcher and disable XDebug
-  #RUN curl -Ls https://raw.github.com/rikby/xdebug-switcher/master/download | bash && xd_swi off
-  # Add static file (v0.6.0)
-  COPY init-files/xd_swi /usr/local/bin/xd_swi
-  RUN chmod +x /usr/local/bin/xd_swi && xd_swi off
+# Get Xdebug switcher and disable XDebug
+#RUN curl -Ls https://raw.github.com/rikby/xdebug-switcher/master/download | bash && xd_swi off
+# Add static file (v0.6.0)
+COPY init-files/xd_swi /usr/local/bin/xd_swi
+RUN chmod +x /usr/local/bin/xd_swi && xd_swi off
+
 
 COPY init-files/xdebug.ini /etc/php.d/xdebug.ini.join
 RUN xd_file=$(php -i | grep xdebug.ini | grep -oE '/.+xdebug.ini') && \
   cat /etc/php.d/xdebug.ini.join >> ${xd_file} && \
   rm -f /etc/php.d/xdebug.ini.join
 
-COPY httpd.conf /etc/httpd/conf/httpd.conf
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN curl -SL https://raw.githubusercontent.com/colinmollenhour/modman/master/modman -o modman \
-    && chmod +x ./modman \
-    && mv ./modman /usr/local/bin/
-
-# Expose apache.
-EXPOSE 80
-
-# By default start up apache in the foreground, override with /bin/bash for interative.
-CMD /usr/sbin/httpd -D FOREGROUND
+# Add magento user into sudoers
+RUN echo 'magento ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
