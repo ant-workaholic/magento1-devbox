@@ -46,10 +46,10 @@ RUN yum -y install \
 # Added sendmail                    #
 
 #Install sertificates for *.cc domain
-RUN mkdir -p /etc/nginx/cert && \
+RUN mkdir -p /etc/httpd/cert && \
     openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes \
-          -keyout /etc/nginx/cert/server.key \
-          -out /etc/nginx/cert/server.crt \
+          -keyout /etc/httpd/cert/server.key \
+          -out /etc/httpd/cert/server.crt \
           -subj '/C=UA/ST=Kiev/L=Kiev/O=My Inc./OU=Department/CN=*.cc'
 
 # Xdebug
@@ -111,6 +111,10 @@ RUN xd_file=$(php -i | grep xdebug.ini | grep -oE '/.+xdebug.ini') && \
   COPY init-files/xd_swi /usr/local/bin/xd_swi
   RUN chmod +x /usr/local/bin/xd_swi && xd_swi off
 
+COPY init-files/xdebug.ini /etc/php.d/xdebug.ini.join
+RUN xd_file=$(php -i | grep xdebug.ini | grep -oE '/.+xdebug.ini') && \
+  cat /etc/php.d/xdebug.ini.join >> ${xd_file} && \
+  rm -f /etc/php.d/xdebug.ini.join
 
 COPY httpd.conf /etc/httpd/conf/httpd.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
