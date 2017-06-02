@@ -37,6 +37,10 @@ RUN yum -y install \
 #ADD supervisord_*.ini /etc/supervisord.d/
 # Added Xdebug config for SSH connections
 
+# Add magento user
+RUN useradd magento -u1000 && \
+    usermod -G magento apache && \
+    usermod -G apache magento
 
 COPY httpd.conf /etc/httpd/conf/httpd.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
