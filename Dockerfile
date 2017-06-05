@@ -31,8 +31,16 @@ RUN yum -y install \
     php56w-pecl-xdebug \
     php56w-pecl-opcache \
     sendmail \
+    php-pecl-xdebug \
+    sudo \
 	&& yum clean all
 #ADD supervisord_*.ini /etc/supervisord.d/
+# Added Xdebug config for SSH connections
+
+# Add magento user
+RUN useradd magento -u1000 && \
+    usermod -G magento apache && \
+    usermod -G apache magento
 
 
 COPY httpd.conf /etc/httpd/conf/httpd.conf
