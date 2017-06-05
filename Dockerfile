@@ -50,10 +50,7 @@ RUN curl -SL https://raw.githubusercontent.com/colinmollenhour/modman/master/mod
     && mv ./modman /usr/local/bin/
 
 # Add magento user
-RUN useradd magento -u1000 && \
-    usermod -G magento httpd && \
-    usermod -G httpd magento
-
+RUN useradd magento -u1000
 
 
 # Expose apache.
