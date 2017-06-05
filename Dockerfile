@@ -7,6 +7,8 @@ FROM centos:6.8
 # -----------------------------------------------------------------------------
 RUN rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
 
+
+
 # Supervisor to run all services
 RUN yum install -y httpd
 
@@ -34,8 +36,10 @@ RUN yum -y install \
     php-pecl-xdebug \
     sudo \
 	&& yum clean all
+
 #ADD supervisord_*.ini /etc/supervisord.d/
 # Added Xdebug config for SSH connections
+RUN yum install -y supervisor
 
 # Add magento user
 RUN /usr/sbin/useradd magento -u1000 && \
