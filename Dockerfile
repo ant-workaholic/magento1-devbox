@@ -38,7 +38,7 @@ RUN yum -y install \
 # Added Xdebug config for SSH connections
 
 # Add magento user
-RUN useradd magento -u1000 && \
+RUN /usr/sbin/useradd magento -u1000 && \
     usermod -G magento apache && \
     usermod -G apache magento
 
