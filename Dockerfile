@@ -39,7 +39,9 @@ RUN yum -y install \
 
 #ADD supervisord_*.ini /etc/supervisord.d/
 # Added Xdebug config for SSH connections
-RUN yum install -y supervisor
+RUN yum install python-setuptools \
+        easy_install pip \
+        && sudo pip install supervisor
 
 # Add magento user
 RUN /usr/sbin/useradd magento -u1000 && \
