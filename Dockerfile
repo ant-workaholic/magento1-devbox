@@ -49,9 +49,9 @@ RUN curl -SL https://raw.githubusercontent.com/colinmollenhour/modman/master/mod
     && chmod +x ./modman \
     && mv ./modman /usr/local/bin/
 
+RUN useradd -ms /bin/bash magento
 # Add magento user
-RUN useradd magento -u1000 && \
-    usermod -G magento apache && \
+RUN usermod -G magento apache && \
     usermod -G apache magento
 
 
