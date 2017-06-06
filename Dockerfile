@@ -5,7 +5,17 @@ FROM centos:7
 # -----------------------------------------------------------------------------
 # PHP 5.6 repository
 # -----------------------------------------------------------------------------
-RUN rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+ENV LC_ALL en_US.UTF-8
+#Add repos
+RUN yum update -y \
+  && rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+  # define locale
+  && localedef -c -f UTF-8 -i en_US en_US.UTF-8 \
+  # Supervisor to run all services
+  && yum install -y supervisor \
+  # Git
+  && rpm -U http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm \
+  && yum install -y git
 
 
 
@@ -37,11 +47,6 @@ RUN yum -y install \
     sudo \
 	&& yum clean all
 
-#ADD supervisord_*.ini /etc/supervisord.d/
-# Added Xdebug config for SSH connections
-RUN yum install python-setuptools \
-        easy_install pip \
-        && sudo pip install supervisor
 
 # Add magento user
 RUN /usr/sbin/useradd magento -u1000 && \
