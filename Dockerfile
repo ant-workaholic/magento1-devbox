@@ -1,21 +1,11 @@
 #/bin/bash
-FROM centos:7
+FROM centos:6.8
 
 ########## base config for server ##########
 # -----------------------------------------------------------------------------
 # PHP 5.6 repository
 # -----------------------------------------------------------------------------
-ENV LC_ALL en_US.UTF-8
-#Add repos
-RUN yum update -y \
-  && rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-  # define locale
-  && localedef -c -f UTF-8 -i en_US en_US.UTF-8 \
-  # Supervisor to run all services
-  && yum install -y supervisor \
-  # Git
-  && rpm -U http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm \
-  && yum install -y git
+RUN rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
 
 
 
