@@ -1,11 +1,11 @@
 #/bin/bash
-FROM centos:6.8
+FROM centos:7
 
 ########## base config for server ##########
 # -----------------------------------------------------------------------------
 # PHP 5.6 repository
 # -----------------------------------------------------------------------------
-RUN rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
+RUN rpm -U https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 
 
