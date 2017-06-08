@@ -37,6 +37,9 @@ RUN yum -y install \
 #ADD supervisord_*.ini /etc/supervisord.d/
 # Added Xdebug config for SSH connections
 
+RUN yum install php-devel gcc gcc-c++ autoconf automake \
+    && yum install php-pear
+
 # Add magento user
 RUN useradd magento -u1000 && \
     usermod -G magento apache && \
