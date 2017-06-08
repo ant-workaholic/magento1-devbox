@@ -43,9 +43,6 @@ RUN yum install -y iproute python-setuptools hostname inotify-tools yum-utils wh
 
 COPY supervisord.conf /etc/supervisord.conf
 
-RUN yum install php-devel gcc gcc-c++ autoconf automake \
-    && yum install php-pear
-
 # Add magento user
 RUN /usr/sbin/useradd magento -u1000 && \
     usermod -G magento apache && \
