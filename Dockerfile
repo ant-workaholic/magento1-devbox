@@ -7,6 +7,8 @@ FROM centos:6.8
 # -----------------------------------------------------------------------------
 RUN rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
 
+
+
 # Supervisor to run all services
 RUN yum install -y httpd
 
@@ -34,16 +36,23 @@ RUN yum -y install \
     php-pecl-xdebug \
     sudo \
 	&& yum clean all
-#ADD supervisord_*.ini /etc/supervisord.d/
-# Added Xdebug config for SSH connections
+
+RUN yum install -y iproute python-setuptools hostname inotify-tools yum-utils which jq && \
+  yum clean all && \
+  easy_install supervisor
+
+COPY supervisord.conf /etc/supervisord.conf
 
 RUN yum install php-devel gcc gcc-c++ autoconf automake \
     && yum install php-pear
 
 # Add magento user
-RUN useradd magento -u1000 && \
+RUN /usr/sbin/useradd magento -u1000 && \
     usermod -G magento apache && \
     usermod -G apache magento
+
+# Supervisord services
+COPY /init-files/supervisord_*.ini /etc/supervisord.d/
 
 COPY httpd.conf /etc/httpd/conf/httpd.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -51,8 +60,5 @@ RUN curl -SL https://raw.githubusercontent.com/colinmollenhour/modman/master/mod
     && chmod +x ./modman \
     && mv ./modman /usr/local/bin/
 
-# Expose apache.
-EXPOSE 80
-
 # By default start up apache in the foreground, override with /bin/bash for interative.
-CMD /usr/sbin/httpd -D FOREGROUND
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
