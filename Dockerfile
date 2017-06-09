@@ -28,6 +28,7 @@ RUN yum -y install \
     php56w-mbstring \
 	php56w-cli \
 	php56w-gd \
+	php56w-devel \
 	php56w-pecl-apcu \
 	php56w-pecl-memcached \
     php56w-pecl-xdebug \
