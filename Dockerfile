@@ -33,7 +33,6 @@ RUN yum -y install \
     php56w-pecl-xdebug \
     php56w-pecl-opcache \
     sendmail \
-    php-pecl-xdebug \
     sudo \
 	&& yum clean all
 
